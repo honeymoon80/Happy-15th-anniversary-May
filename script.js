@@ -7,14 +7,14 @@
 // ════════════════════════════════════════════
 // ESTADO GLOBAL
 // ════════════════════════════════════════════
-let loadProgress = 0;
+let loadProgress = 0;          // 0 a 100
 let loadAccelerated = false;
 let loadInterval = null;
 let loadStartTime = null;
 
 let scene, camera, renderer, heartGroup, heartParticlesMesh;
 let heartGeometry, heartMaterial;
-let basePositions = null;
+let basePositions = null;      // posiciones base del corazón (sin orbita)
 let particleCount = 0;
 let galaxyAnimRunning = false;
 let mouseNDC = { x: 0, y: 0 };
@@ -23,11 +23,12 @@ let heartPulseT = 0;
 let heartColorT = 0;
 let orbitAngleGlobal = 0;
 
+let audioCtx = null;
 let currentSongIdx = 0;
 let isPlaying = false;
 let playerMinimized = false;
 
-// DOM refs
+// DOM refs (se resuelven en DOMContentLoaded)
 let openScreen, openBtn, loadScreen, galaxyScreen, birthCanvas;
 let loadRingFg, loadPct, loadHeartWrap, loadHeartCanvas, loadSparkLayer;
 let starsFallCanvas, starsFallCtx;
@@ -109,6 +110,7 @@ function resolveDomRefs() {
 
   globalNotif = document.getElementById('globalNotif');
 
+  // Título personalizable
   const titleEl = document.getElementById('openTitle');
   if (titleEl && CONFIG.tituloApertura) titleEl.textContent = CONFIG.tituloApertura;
   const subEl = document.querySelector('.open-subtitle');
@@ -126,6 +128,7 @@ function resizeAllCanvases() {
     loadHeartCanvas.height = loadHeartWrap.clientHeight;
   }
   if (renderer && camera) {
+    const galaxyCanvas = document.getElementById('galaxyCanvas');
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -163,7 +166,7 @@ function bindOpenScreen() {
 }
 
 // ════════════════════════════════════════════
-// FASE 1B — PANTALLA DE CARGA
+// FASE 1B — PANTALLA DE CARGA INTERACTIVA
 // ════════════════════════════════════════════
 function startLoadScreen() {
   loadScreen.classList.remove('hidden');
@@ -197,10 +200,12 @@ function bindLoadScreen() {
 
 function accelerateLoad() {
   loadAccelerated = true;
+  // Reiniciar el cronómetro relativo manteniendo el progreso ya alcanzado,
+  // para que la aceleración se sienta inmediata sin saltos.
   const elapsed = performance.now() - loadStartTime;
   const durationMs = CONFIG.duracionCarga * 1000;
-  const already = elapsed / durationMs;
-  loadStartTime = performance.now() - already * durationMs;
+  const already = elapsed / durationMs; // fracción ya recorrida a velocidad normal
+  loadStartTime = performance.now() - already * durationMs; // mantiene continuidad
   spawnLoadSparkBurst();
 }
 
@@ -223,7 +228,6 @@ function buildLoadSparks() {
     loadSparkLayer.appendChild(s);
   }
 }
-
 function spawnLoadSparkBurst() {
   for (let i = 0; i < 4; i++) {
     const s = document.createElement('div');
@@ -236,22 +240,28 @@ function spawnLoadSparkBurst() {
   }
 }
 
+// Dibuja un corazón de partículas que se "llena" según pct (0-100)
 function drawLoadHeart(pct) {
   const ctx = loadHeartCanvas.getContext('2d');
   const w = loadHeartCanvas.width, h = loadHeartCanvas.height;
   ctx.clearRect(0, 0, w, h);
   const cx = w/2, cy = h/2;
   const scale = Math.min(w, h) / 280;
+
+  // Pulso del corazón mientras carga
   const pulse = 1 + Math.sin(performance.now()/260) * 0.04;
-  const total = 360;
+
+  const total = 360; // puntos de contorno del corazón
   const fillCount = Math.round(total * (pct/100));
 
   for (let i = 0; i < total; i++) {
     const t = (i / total) * Math.PI * 2;
+    // Ecuación paramétrica de corazón
     const hx = 16 * Math.pow(Math.sin(t), 3);
     const hy = -(13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
     const px = cx + hx * scale * 3.6 * pulse;
     const py = cy + hy * scale * 3.6 * pulse;
+
     const filled = i < fillCount;
     const radius = filled ? (Math.random()*1.4+1.6) : (Math.random()*1+0.8);
     ctx.beginPath();
@@ -270,9 +280,9 @@ function drawLoadHeart(pct) {
   ctx.shadowBlur = 0;
 }
 
+// Estrellas cayendo en el fondo de la pantalla de carga
 let starsFallParticles = [];
 let starsFallRunning = false;
-
 function startStarsFall() {
   starsFallParticles = [];
   for (let i = 0; i < 90; i++) {
@@ -287,7 +297,6 @@ function startStarsFall() {
   starsFallRunning = true;
   requestAnimationFrame(loopStarsFall);
 }
-
 function loopStarsFall() {
   if (!starsFallRunning) return;
   starsFallCtx.clearRect(0,0,starsFallCanvas.width, starsFallCanvas.height);
@@ -338,42 +347,76 @@ function startBirthTransition() {
   }
 
   const start = performance.now();
-  const duration = 1000;
+  const duration = 1000; // 1 segundo de crossfade + nacimiento
 
-  initGalaxyScene();
   galaxyScreen.classList.remove('hidden');
   galaxyScreen.style.opacity = '0';
 
+  // La galaxia (Three.js) se inicializa una sola vez, cuando THREE ya esté listo.
+  let galaxyReady = false;
+  function trySetupGalaxy() {
+    if (galaxyReady) return;
+    if (typeof THREE === 'undefined') return; // aún cargando el CDN, se reintenta cada frame
+    try {
+      initGalaxyScene();
+      galaxyReady = true;
+    } catch (err) {
+      console.error('Error inicializando la galaxia:', err);
+      galaxyReady = true; // no reintentar infinito si hay un error real
+      showNotif('Hubo un problema cargando la galaxia 💗 recarga la página');
+    }
+  }
+  trySetupGalaxy();
+
   function loop(now) {
-    const t = (now - start) / duration;
-    ctx.clearRect(0,0,birthCanvas.width, birthCanvas.height);
-    ctx.fillStyle = `rgba(20,6,15,${1 - t})`;
-    ctx.fillRect(0,0,birthCanvas.width, birthCanvas.height);
+    try {
+      const t = (now - start) / duration;
+      ctx.clearRect(0,0,birthCanvas.width, birthCanvas.height);
+      ctx.fillStyle = `rgba(20,6,15,${Math.max(0,1 - t)})`;
+      ctx.fillRect(0,0,birthCanvas.width, birthCanvas.height);
 
-    stars.forEach(s => {
-      s.x += s.vx; s.y += s.vy;
-      s.life -= 0.006;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
-      ctx.fillStyle = s.color;
-      ctx.globalAlpha = Math.max(0, s.life);
-      ctx.shadowColor = s.color;
-      ctx.shadowBlur = 8;
-      ctx.fill();
-    });
-    ctx.globalAlpha = 1;
-    ctx.shadowBlur = 0;
+      stars.forEach(s => {
+        s.x += s.vx; s.y += s.vy;
+        s.life -= 0.006;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
+        ctx.fillStyle = s.color;
+        ctx.globalAlpha = Math.max(0, s.life);
+        ctx.shadowColor = s.color;
+        ctx.shadowBlur = 8;
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
 
-    galaxyScreen.style.opacity = Math.min(1, t*1.3).toFixed(3);
+      // Si THREE.js todavía no cargó, seguimos intentando en cada frame
+      if (!galaxyReady) trySetupGalaxy();
 
-    if (t < 1) {
-      requestAnimationFrame(loop);
-    } else {
+      // Crossfade: la galaxia va apareciendo (solo si ya está inicializada)
+      if (galaxyReady) {
+        galaxyScreen.style.opacity = Math.min(1, t*1.3).toFixed(3);
+      }
+
+      // El nacimiento de estrellas dura como mínimo "duration" ms,
+      // pero no termina hasta que la galaxia esté lista (evita pantalla negra).
+      if (t < 1 || !galaxyReady) {
+        requestAnimationFrame(loop);
+      } else {
+        birthCanvas.classList.add('hidden');
+        galaxyScreen.style.opacity = '1';
+        startGalaxyAnimation();
+        initPlayerWithFirstSong();
+      }
+    } catch (err) {
+      // Cualquier error inesperado no debe dejar la pantalla congelada:
+      // forzamos el salto a la galaxia (o a un estado visible) en vez de morir en silencio.
+      console.error('Error en la transición de nacimiento de estrellas:', err);
       birthCanvas.classList.add('hidden');
+      galaxyScreen.classList.remove('hidden');
       galaxyScreen.style.opacity = '1';
-      // ✅ INICIAR GALAXIA AQUÍ
-      startGalaxyAnimation();
-      initPlayerWithFirstSong();
+      if (!galaxyAnimRunning) {
+        try { startGalaxyAnimation(); initPlayerWithFirstSong(); } catch (e2) { console.error(e2); }
+      }
     }
   }
   requestAnimationFrame(loop);
@@ -392,6 +435,7 @@ function initGalaxyScene() {
   camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 2000);
   camera.position.set(0, 0, 220);
 
+  // Fondo estrellado distante
   scene.add(buildBackgroundStars());
 
   heartGroup = new THREE.Group();
@@ -400,6 +444,7 @@ function initGalaxyScene() {
   particleCount = CONFIG.cantidadParticulas;
   buildHeartParticles();
 
+  // Mouse tracking para efecto viento
   window.addEventListener('mousemove', e => {
     mouseScreen.x = e.clientX; mouseScreen.y = e.clientY;
     mouseNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -428,7 +473,9 @@ function buildBackgroundStars() {
   return new THREE.Points(geo, mat);
 }
 
+// Genera las posiciones del corazón en 3D (forma esférica de corazón "engrosado")
 function heartShapePoint(u, v) {
+  // u: 0..2PI (contorno del corazón), v: 0..1 (radio interior/grosor)
   const hx = 16 * Math.pow(Math.sin(u), 3);
   const hy = 13*Math.cos(u) - 5*Math.cos(2*u) - 2*Math.cos(3*u) - Math.cos(4*u);
   const scale = CONFIG.radioCorazon / 16;
@@ -451,7 +498,7 @@ function buildHeartParticles() {
 
   for (let i = 0; i < particleCount; i++) {
     const u = Math.random() * Math.PI * 2;
-    const v = 0.25 + Math.random() * 0.85;
+    const v = 0.25 + Math.random() * 0.85; // grosor variable, evita centro vacío
     const p = heartShapePoint(u, v);
 
     positions[i*3]   = p.x;
@@ -484,6 +531,7 @@ function buildHeartParticles() {
   heartParticlesMesh = new THREE.Points(heartGeometry, heartMaterial);
   heartGroup.add(heartParticlesMesh);
 
+  // Halo suave detrás del corazón
   const haloGeo = new THREE.SphereGeometry(CONFIG.radioCorazon*1.5, 24, 24);
   const haloMat = new THREE.MeshBasicMaterial({
     color: 0xFF85A2, transparent:true, opacity:0.045,
@@ -497,39 +545,49 @@ function buildHeartParticles() {
 // ANIMACIÓN PRINCIPAL DE LA GALAXIA
 // ════════════════════════════════════════════
 function startGalaxyAnimation() {
-  if (galaxyAnimRunning) return;
   galaxyAnimRunning = true;
-  buildOrbitElements();
+  buildOrbitElements(); // frases, palabras clave, imágenes (HTML sobre el canvas)
   requestAnimationFrame(animateGalaxy);
 }
 
 function animateGalaxy(now) {
   if (!galaxyAnimRunning) return;
 
-  heartPulseT += 0.018;
-  const pulseScale = 1 + Math.sin(heartPulseT) * 0.04;
-  heartGroup.scale.set(pulseScale, pulseScale, pulseScale);
+  try {
+    // Pulso del corazón: escala 1.0 -> 1.08 -> 1.0
+    heartPulseT += 0.018;
+    const pulseScale = 1 + Math.sin(heartPulseT) * 0.04;
+    heartGroup.scale.set(pulseScale, pulseScale, pulseScale);
 
-  orbitAngleGlobal += CONFIG.velocidadOrbita;
-  heartGroup.rotation.y = orbitAngleGlobal;
+    // Rotación lenta de la galaxia completa (órbita de partículas)
+    orbitAngleGlobal += CONFIG.velocidadOrbita;
+    heartGroup.rotation.y = orbitAngleGlobal;
 
-  heartColorT += 0.0015;
-  applyHeartColorCycle(heartColorT);
+    // Color del corazón cambia gradualmente entre tonos pastel (ciclo lento)
+    heartColorT += 0.0015;
+    applyHeartColorCycle(heartColorT);
 
-  applyWindEffect();
+    // Efecto "viento": las partículas se apartan ligeramente cerca del mouse
+    applyWindEffect();
 
-  renderer.render(scene, camera);
+    renderer.render(scene, camera);
 
-  updateOrbitOverlayPositions();
+    // Sincronizar overlay HTML (frases/palabras/imágenes) con la rotación 3D
+    updateOrbitOverlayPositions();
+  } catch (err) {
+    // Un error en un solo frame no debe congelar la galaxia para siempre.
+    console.error('Error en animateGalaxy:', err);
+  }
 
   requestAnimationFrame(animateGalaxy);
 }
 
+// Cicla los colores pastel de las partículas suavemente
 function applyHeartColorCycle(t) {
   const colors = heartGeometry.attributes.color;
   const baseColors = CONFIG.colores.map(c => new THREE.Color(c));
-  const shift = Math.sin(t) * 0.5 + 0.5;
-  for (let i = 0; i < particleCount; i += 7) {
+  const shift = Math.sin(t) * 0.5 + 0.5; // 0..1
+  for (let i = 0; i < particleCount; i += 7) { // muestreo parcial para rendimiento
     const c1 = baseColors[i % baseColors.length];
     const c2 = baseColors[(i+1) % baseColors.length];
     const r = c1.r + (c2.r - c1.r) * shift;
@@ -540,17 +598,21 @@ function applyHeartColorCycle(t) {
   colors.needsUpdate = true;
 }
 
+// Aparta partículas cerca de la posición proyectada del mouse (efecto viento)
 function applyWindEffect() {
   const positions = heartGeometry.attributes.position;
+  // Proyectar mouse a coordenadas de mundo aproximadas (plano z=0 del grupo)
   const vector = new THREE.Vector3(mouseNDC.x, mouseNDC.y, 0.5);
   vector.unproject(camera);
   const dir = vector.sub(camera.position).normalize();
   const distance = -camera.position.z / dir.z;
   const worldPos = camera.position.clone().add(dir.multiplyScalar(distance));
+
+  // Convertir a espacio local del heartGroup (deshacer rotación actual)
   const localPos = heartGroup.worldToLocal(worldPos.clone());
 
   const windRadius = 38;
-  for (let i = 0; i < particleCount; i += 3) {
+  for (let i = 0; i < particleCount; i += 3) { // muestreo parcial para rendimiento
     const bx = basePositions[i*3], by = basePositions[i*3+1], bz = basePositions[i*3+2];
     const dx = bx - localPos.x, dy = by - localPos.y;
     const distSq = dx*dx + dy*dy;
@@ -568,14 +630,17 @@ function applyWindEffect() {
 }
 
 // ════════════════════════════════════════════
-// ELEMENTOS ORBITANTES
+// ELEMENTOS ORBITANTES (frases, palabras clave, imágenes)
+// Implementados como overlay HTML posicionado dinámicamente
+// para máxima nitidez de texto e imágenes.
 // ════════════════════════════════════════════
-let orbitElements = [];
+let orbitElements = []; // {el, radius, speed, angle, baseSize, type}
 
 function buildOrbitElements() {
   orbitLayer.innerHTML = '';
   orbitElements = [];
 
+  // ── Frases cortas ──────────────────────────
   CONFIG.frases.forEach((frase, i) => {
     const el = document.createElement('div');
     el.className = 'orbit-phrase';
@@ -589,6 +654,7 @@ function buildOrbitElements() {
     });
   });
 
+  // ── Palabras clave ─────────────────────────
   const kwEntries = Object.entries(CONFIG.palabrasClave);
   kwEntries.forEach(([palabra, mensaje], i) => {
     const el = document.createElement('div');
@@ -603,10 +669,11 @@ function buildOrbitElements() {
     });
   });
 
+  // ── Imágenes orbitando ─────────────────────
   CONFIG.imagenes.forEach((img, i) => {
     const wrap = document.createElement('div');
     wrap.className = 'orbit-img-wrap';
-    wrap.innerHTML = `<img src="img/${img}" alt="recuerdo ${i+1}"
+    wrap.innerHTML = `<img src="assets/img/${img}" alt="recuerdo ${i+1}"
       onerror="this.parentElement.style.background='linear-gradient(135deg,#FFD1DC,#FFB6C1)';this.style.display='none'">`;
     orbitLayer.appendChild(wrap);
     orbitElements.push({
@@ -617,6 +684,8 @@ function buildOrbitElements() {
   });
 }
 
+// Actualiza la posición 2D (pantalla) de cada elemento orbitante,
+// simulando profundidad (escala + z-index) según el ángulo de órbita.
 function updateOrbitOverlayPositions() {
   const cx = window.innerWidth / 2;
   const cy = window.innerHeight / 2;
@@ -625,7 +694,7 @@ function updateOrbitOverlayPositions() {
   orbitElements.forEach(o => {
     o.angle += o.speed * 0.01;
     const x = Math.cos(o.angle) * o.radius;
-    const zFactor = Math.sin(o.angle);
+    const zFactor = Math.sin(o.angle); // -1..1 simula profundidad
     const y = Math.sin(o.angle * 0.7 + t*0.3) * o.vertAmp * 0.4 + Math.sin(o.angle) * (o.vertAmp*0.3);
 
     const depthScale = 0.65 + (zFactor*0.5+0.5) * o.depthAmp + 0.5;
@@ -641,7 +710,8 @@ function updateOrbitOverlayPositions() {
 }
 
 // ════════════════════════════════════════════
-// INTERACCIONES
+// INTERACCIONES GLOBALES DE LA GALAXIA
+// (clic en fondo vacío -> partículas + frase corta)
 // ════════════════════════════════════════════
 function bindGalaxyInteractions() {
   document.addEventListener('click', e => {
@@ -658,7 +728,8 @@ function bindGalaxyInteractions() {
 }
 
 // ════════════════════════════════════════════
-// PARTÍCULAS DE CLIC
+// PARTÍCULAS DE CLIC (emojis + frases cortas)
+// Canvas 2D overlay para máximo rendimiento
 // ════════════════════════════════════════════
 let clickParticles = [];
 let clickFxLoopRunning = false;
@@ -732,7 +803,7 @@ function loopClickFx() {
 }
 
 // ════════════════════════════════════════════
-// MODALES
+// MODAL DE FRASE / PALABRA CLAVE
 // ════════════════════════════════════════════
 function openPhraseModal(titulo, texto, isPhrase) {
   phraseTitle.textContent = titulo;
@@ -741,7 +812,6 @@ function openPhraseModal(titulo, texto, isPhrase) {
   phraseModal.classList.remove('hidden');
   spawnClickParticles(window.innerWidth/2, window.innerHeight/3, 14);
 }
-
 function closePhraseModal() { phraseModal.classList.add('hidden'); }
 
 function bindModals() {
@@ -750,6 +820,7 @@ function bindModals() {
   endPlaylistClose.addEventListener('click', () => endPlaylistModal.classList.add('hidden'));
   endPlaylistBackdrop.addEventListener('click', () => endPlaylistModal.classList.add('hidden'));
 
+  // Botón atrás del móvil cierra modales abiertos
   history.pushState({page:'home'}, '');
   window.addEventListener('popstate', () => {
     if (!phraseModal.classList.contains('hidden')) {
@@ -791,9 +862,10 @@ function bindPlayer() {
   galaxyAudio.addEventListener('play',  () => { isPlaying = true;  playerPlay.textContent='⏸'; playerDisc.classList.add('playing'); });
   galaxyAudio.addEventListener('pause', () => { isPlaying = false; playerPlay.textContent='▶'; playerDisc.classList.remove('playing'); });
   galaxyAudio.addEventListener('ended', () => {
+    // ¿Era la última canción de la playlist?
     if (currentSongIdx >= CONFIG.canciones.length - 1) {
       showEndPlaylistMessage();
-      changeSong(1);
+      changeSong(1); // reinicia desde la primera de todas formas
     } else {
       changeSong(1);
     }
@@ -833,7 +905,7 @@ function initPlayerWithFirstSong() {
 function loadSong(idx, autoplay) {
   currentSongIdx = ((idx % CONFIG.canciones.length) + CONFIG.canciones.length) % CONFIG.canciones.length;
   const song = CONFIG.canciones[currentSongIdx];
-  galaxyAudio.src = `music/${song.archivo}`;
+  galaxyAudio.src = `assets/music/${song.archivo}`;
   playerSongName.textContent = song.nombre;
   if (autoplay) galaxyAudio.play().catch(() => {});
   buildSongList();
@@ -843,14 +915,11 @@ function togglePlay() {
   if (isPlaying) galaxyAudio.pause();
   else galaxyAudio.play().catch(() => {});
 }
-
 function changeSong(dir) { loadSong(currentSongIdx + dir, true); }
-
 function seekRelative(sec) {
   if (!galaxyAudio.duration) return;
   galaxyAudio.currentTime = Math.max(0, Math.min(galaxyAudio.duration, galaxyAudio.currentTime + sec));
 }
-
 function updatePlayerProgress() {
   if (!galaxyAudio.duration) return;
   const pct = galaxyAudio.currentTime / galaxyAudio.duration * 100;
@@ -859,13 +928,11 @@ function updatePlayerProgress() {
   playerCurTime.textContent = fmtTime(galaxyAudio.currentTime);
   playerTotalTime.textContent = fmtTime(galaxyAudio.duration);
 }
-
 function fmtTime(s) {
   if (isNaN(s)) return '0:00';
   const m = Math.floor(s/60), ss = Math.floor(s%60);
   return m + ':' + (ss<10?'0':'') + ss;
 }
-
 function togglePlayerPanel() {
   playerMinimized = !playerMinimized;
   playerPanel.classList.toggle('minimized', playerMinimized);
@@ -878,10 +945,9 @@ function showEndPlaylistMessage() {
 }
 
 // ════════════════════════════════════════════
-// NOTIFICACIÓN GLOBAL
+// NOTIFICACIÓN GLOBAL (utilidad)
 // ════════════════════════════════════════════
 let notifTimer = null;
-
 function showNotif(msg) {
   if (!globalNotif) return;
   globalNotif.textContent = msg;
@@ -889,19 +955,3 @@ function showNotif(msg) {
   clearTimeout(notifTimer);
   notifTimer = setTimeout(() => globalNotif.classList.remove('show'), 3500);
 }
-
-// ════════════════════════════════════════════
-// FUERZA INICIO DE GALAXIA (para celular)
-// ════════════════════════════════════════════
-setTimeout(function() {
-  if (typeof startGalaxyAnimation === 'function') {
-    startGalaxyAnimation();
-  } else {
-    window.startGalaxyAnimation = function() {
-      galaxyAnimRunning = true;
-      buildOrbitElements();
-      requestAnimationFrame(animateGalaxy);
-    };
-    startGalaxyAnimation();
-  }
-}, 2000);
