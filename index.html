@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Para May 💗</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;1,400&family=Cormorant+Garamond:ital,wght@0,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     CANVAS DE PARTÍCULAS DE CLIC (overlay global)
+════════════════════════════════════════════ -->
+<canvas id="clickFxCanvas"></canvas>
+
+<!-- ════════════════════════════════════════════
+     NOTIFICACIÓN GLOBAL
+════════════════════════════════════════════ -->
+<div id="globalNotif" class="global-notif"></div>
+
+<!-- ════════════════════════════════════════════
+     FASE 1A — PANTALLA DE APERTURA
+════════════════════════════════════════════ -->
+<div id="openScreen" class="open-screen">
+  <div class="open-bg-deco" id="openBgDeco"></div>
+  <div class="open-content">
+    <div class="open-title" id="openTitle">Para May, con todo mi amor</div>
+    <div class="open-subtitle">Un regalo hecho con cada latido de mi corazón 💗</div>
+    <button id="openBtn" class="open-heart-btn">
+      <span class="open-heart-icon">💗</span>
+      <span class="open-heart-label">Abrir regalo</span>
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     FASE 1B — PANTALLA DE CARGA INTERACTIVA
+════════════════════════════════════════════ -->
+<div id="loadScreen" class="load-screen hidden">
+  <canvas id="starsFallCanvas"></canvas>
+  <div class="load-content">
+    <div class="load-heart-wrap" id="loadHeartWrap">
+      <canvas id="loadHeartCanvas"></canvas>
+      <svg class="load-ring-svg" viewBox="0 0 200 200">
+        <circle class="load-ring-bg" cx="100" cy="100" r="92"></circle>
+        <circle class="load-ring-fg" id="loadRingFg" cx="100" cy="100" r="92"></circle>
+      </svg>
+      <div class="load-spark-layer" id="loadSparkLayer"></div>
+    </div>
+    <div class="load-pct" id="loadPct">0%</div>
+    <div class="load-hint">Toca el corazón para acelerar ✨</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TRANSICIÓN NACIMIENTO DE ESTRELLAS
+════════════════════════════════════════════ -->
+<canvas id="birthCanvas" class="birth-canvas hidden"></canvas>
+
+<!-- ════════════════════════════════════════════
+     FASE 2 — GALAXIA DE CORAZONES
+════════════════════════════════════════════ -->
+<div id="galaxyScreen" class="galaxy-screen hidden">
+  <canvas id="galaxyCanvas"></canvas>
+
+  <!-- Capa HTML para frases / palabras clave / imágenes orbitando -->
+  <div class="orbit-layer" id="orbitLayer"></div>
+
+  <!-- Reproductor de música -->
+  <div class="player-wrap" id="playerWrap">
+    <button class="player-toggle" id="playerToggle">🎵</button>
+    <div class="player-panel" id="playerPanel">
+      <div class="player-disc" id="playerDisc">
+        <div class="player-disc-inner">♪</div>
+      </div>
+      <div class="player-song-name" id="playerSongName">Cargando...</div>
+      <div class="player-progress-row">
+        <span class="player-time" id="playerCurTime">0:00</span>
+        <div class="player-progress-track" id="playerProgressTrack">
+          <div class="player-progress-fill" id="playerProgressFill"></div>
+          <div class="player-progress-thumb" id="playerProgressThumb"></div>
+        </div>
+        <span class="player-time" id="playerTotalTime">0:00</span>
+      </div>
+      <div class="player-controls">
+        <button class="player-btn" id="playerBack10">⏪</button>
+        <button class="player-btn" id="playerPrev">⏮</button>
+        <button class="player-btn player-play" id="playerPlay">▶</button>
+        <button class="player-btn" id="playerNext">⏭</button>
+        <button class="player-btn" id="playerFwd10">⏩</button>
+      </div>
+      <div class="player-vol-row">
+        <span class="player-vol-icon">🔈</span>
+        <input type="range" id="playerVol" class="player-vol-slider" min="0" max="1" step="0.01" value="0.7">
+      </div>
+      <button class="player-list-btn" id="playerListBtn">Lista de canciones ▾</button>
+      <div class="player-song-list hidden" id="playerSongList"></div>
+    </div>
+  </div>
+  <audio id="galaxyAudio"></audio>
+
+</div>
+
+<!-- ════════════════════════════════════════════
+     MODAL — Frase larga / Palabra clave
+════════════════════════════════════════════ -->
+<div id="phraseModal" class="phrase-modal hidden">
+  <div class="phrase-backdrop" id="phraseBackdrop"></div>
+  <div class="phrase-card" id="phraseCard">
+    <button class="phrase-close" id="phraseClose">✕</button>
+    <div class="phrase-deco-top">✨ 💗 ✨</div>
+    <div class="phrase-title" id="phraseTitle"></div>
+    <div class="phrase-text" id="phraseText"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     MODAL — fin de playlist
+════════════════════════════════════════════ -->
+<div id="endPlaylistModal" class="phrase-modal hidden">
+  <div class="phrase-backdrop" id="endPlaylistBackdrop"></div>
+  <div class="phrase-card small-card" id="endPlaylistCard">
+    <button class="phrase-close" id="endPlaylistClose">✕</button>
+    <div class="phrase-deco-top">🎶 💕 🎶</div>
+    <div class="phrase-text" id="endPlaylistText"></div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
