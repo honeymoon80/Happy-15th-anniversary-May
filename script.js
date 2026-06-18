@@ -23,7 +23,6 @@ let heartPulseT = 0;
 let heartColorT = 0;
 let orbitAngleGlobal = 0;
 
-let audioCtx = null;
 let currentSongIdx = 0;
 let isPlaying = false;
 let playerMinimized = false;
@@ -127,7 +126,6 @@ function resizeAllCanvases() {
     loadHeartCanvas.height = loadHeartWrap.clientHeight;
   }
   if (renderer && camera) {
-    const galaxyCanvas = document.getElementById('galaxyCanvas');
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -500,7 +498,6 @@ function buildHeartParticles() {
 // ════════════════════════════════════════════
 function startGalaxyAnimation() {
   if (galaxyAnimRunning) return;
-  console.log('🚀 Iniciando galaxia...');
   galaxyAnimRunning = true;
   buildOrbitElements();
   requestAnimationFrame(animateGalaxy);
@@ -609,7 +606,6 @@ function buildOrbitElements() {
   CONFIG.imagenes.forEach((img, i) => {
     const wrap = document.createElement('div');
     wrap.className = 'orbit-img-wrap';
-    // ✅ RUTA CORRECTA PARA GITHUB PAGES
     wrap.innerHTML = `<img src="img/${img}" alt="recuerdo ${i+1}"
       onerror="this.parentElement.style.background='linear-gradient(135deg,#FFD1DC,#FFB6C1)';this.style.display='none'">`;
     orbitLayer.appendChild(wrap);
@@ -837,7 +833,6 @@ function initPlayerWithFirstSong() {
 function loadSong(idx, autoplay) {
   currentSongIdx = ((idx % CONFIG.canciones.length) + CONFIG.canciones.length) % CONFIG.canciones.length;
   const song = CONFIG.canciones[currentSongIdx];
-  // ✅ RUTA CORRECTA PARA GITHUB PAGES
   galaxyAudio.src = `music/${song.archivo}`;
   playerSongName.textContent = song.nombre;
   if (autoplay) galaxyAudio.play().catch(() => {});
@@ -896,31 +891,17 @@ function showNotif(msg) {
 }
 
 // ════════════════════════════════════════════
-// ✅ GARANTIZAR QUE LA GALAXIA ARRANQUE EN GITHUB PAGES
+// FUERZA INICIO DE GALAXIA (para celular)
 // ════════════════════════════════════════════
-function ensureGalaxyStarts() {
-  if (galaxyAnimRunning) {
-    console.log('✅ Galaxia ya está corriendo.');
-    return;
-  }
-  if (typeof THREE !== 'undefined' && document.getElementById('galaxyCanvas')) {
-    console.log('🚀 Iniciando galaxia desde ensureGalaxyStarts()...');
+setTimeout(function() {
+  if (typeof startGalaxyAnimation === 'function') {
     startGalaxyAnimation();
   } else {
-    console.log('⏳ Esperando recursos para la galaxia...');
-    setTimeout(ensureGalaxyStarts, 300);
-  }
-}
-
-// Iniciar cuando todo esté cargado
-window.addEventListener('load', () => {
-  setTimeout(ensureGalaxyStarts, 500);
-});
-
-// Fallback: si después de 6 segundos no empezó, forzar
-setTimeout(() => {
-  if (!galaxyAnimRunning) {
-    console.log('🔄 Fallback: forzando inicio de galaxia...');
+    window.startGalaxyAnimation = function() {
+      galaxyAnimRunning = true;
+      buildOrbitElements();
+      requestAnimationFrame(animateGalaxy);
+    };
     startGalaxyAnimation();
   }
-}, 6000);
+}, 2000);
