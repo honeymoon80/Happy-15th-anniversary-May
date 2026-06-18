@@ -635,7 +635,8 @@ function buildOrbitElements() {
   CONFIG.imagenes.forEach((img, i) => {
     const wrap = document.createElement('div');
     wrap.className = 'orbit-img-wrap';
-    wrap.innerHTML = `<img src="assets/img/${img}" alt="recuerdo ${i+1}"
+    // ✅ CORREGIDO: Ruta CORRECTA (img/ en lugar de assets/img/)
+    wrap.innerHTML = `<img src="img/${img}" alt="recuerdo ${i+1}"
       onerror="this.parentElement.style.background='linear-gradient(135deg,#FFD1DC,#FFB6C1)';this.style.display='none'">`;
     orbitLayer.appendChild(wrap);
     orbitElements.push({
@@ -867,7 +868,8 @@ function initPlayerWithFirstSong() {
 function loadSong(idx, autoplay) {
   currentSongIdx = ((idx % CONFIG.canciones.length) + CONFIG.canciones.length) % CONFIG.canciones.length;
   const song = CONFIG.canciones[currentSongIdx];
-  galaxyAudio.src = `assets/music/${song.archivo}`;
+  // ✅ CORREGIDO: Ruta CORRECTA (music/ en lugar de assets/music/)
+  galaxyAudio.src = `music/${song.archivo}`;
   playerSongName.textContent = song.nombre;
   if (autoplay) galaxyAudio.play().catch(() => {});
   buildSongList();
@@ -917,3 +919,9 @@ function showNotif(msg) {
   clearTimeout(notifTimer);
   notifTimer = setTimeout(() => globalNotif.classList.remove('show'), 3500);
 }
+
+// ════════════════════════════════════════════
+// INICIO DE ANIMACIÓN (asegura que se ejecute)
+// ════════════════════════════════════════════
+// Esta función ya existe arriba, pero la dejo como referencia
+// startGalaxyAnimation() ya está definida en la línea 270
