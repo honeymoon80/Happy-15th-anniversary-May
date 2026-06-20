@@ -768,24 +768,21 @@ function updateOrbitOverlayPositions() {
   orbitElements.forEach(o => {
     o.angle += o.speed * 0.01;
 
-    let x, y, zFactor;
+    // Círculo completo de frente a la pantalla (plano XY):
+    // x = cx + radio * cos(ángulo)
+    // y = cy + radio * sin(ángulo)
+    // Así el elemento recorre las 360° (arriba, abajo, izquierda, derecha, diagonales)
+    // en vez de quedar atrapado en una sola línea.
+    const x = Math.cos(o.angle) * o.radius;
+    const y = Math.sin(o.angle) * o.radius;
 
-    if (o.type === 'image') {
-      // Órbita VERTICAL: las imágenes giran en el plano Y-Z (suben y bajan),
-      // en vez del plano X-Z horizontal de frases/palabras clave.
-      zFactor = Math.cos(o.angle); // -1..1 simula profundidad (acercarse/alejarse)
-      x = Math.sin(o.angle) * o.radius * 0.35; // leve desplazamiento horizontal para dar volumen al aro
-      y = Math.sin(o.angle) * o.radius; // recorrido vertical principal (arriba <-> abajo)
-    } else {
-      // Frases y palabras clave: se mantiene la órbita horizontal original
-      x = Math.cos(o.angle) * o.radius;
-      zFactor = Math.sin(o.angle); // -1..1 simula profundidad
-      y = Math.sin(o.angle * 0.7 + t*0.3) * o.vertAmp * 0.4 + Math.sin(o.angle) * (o.vertAmp*0.3);
-    }
+    // zFactor simula profundidad (acercarse/alejarse de cámara) usando un segundo
+    // seno desfasado, sin alterar el círculo real x/y de arriba.
+    const zFactor = Math.sin(o.angle + Math.PI/2);
 
     const depthScale = 0.65 + (zFactor*0.5+0.5) * o.depthAmp + 0.5;
     const screenX = cx + x;
-    const screenY = cy + y * 0.6 - 20;
+    const screenY = cy + y;
 
     o.el.style.left = screenX + 'px';
     o.el.style.top  = screenY + 'px';
