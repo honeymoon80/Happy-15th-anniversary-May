@@ -821,9 +821,16 @@ function bindGalaxyInteractions() {
 // ════════════════════════════════════════════
 let clickParticles = [];
 let clickFxLoopRunning = false;
+const MAX_CLICK_PARTICLES = 500; // tope global para evitar acumulación si hay clics muy rápidos
 
 function spawnClickParticles(x, y, count) {
-  for (let i = 0; i < count; i++) {
+  // Antes el caller podía pedir hasta 36; limitamos aquí a un rango ligero (10-15)
+  // sin tener que tocar cada llamada de spawnClickParticles en el resto del código.
+  const safeCount = Math.min(count, 15);
+
+  for (let i = 0; i < safeCount; i++) {
+    if (clickParticles.length >= MAX_CLICK_PARTICLES) break; // tope global de partículas vivas
+
     const useEmoji = Math.random() > 0.4;
     const angle = Math.random() * Math.PI * 2;
     const speed = Math.random() * 3.4 + 1.4;
@@ -833,9 +840,7 @@ function spawnClickParticles(x, y, count) {
       vy: Math.sin(angle) * speed - 1.5,
       gravity: 0.05,
       life: 1,
-      decay: Math.random()*0.012 + 0.012,
-      rotation: Math.random()*360,
-      rotSpeed: (Math.random()-0.5)*6,
+      decay: 0.022, // vida fija ~1.4-1.5s a 60fps, sin variar la carga de cálculo por partícula
       size: useEmoji ? (Math.random()*14+16) : (Math.random()*5+11),
       text: useEmoji
         ? CONFIG.emojisClick[Math.floor(Math.random()*CONFIG.emojisClick.length)]
@@ -852,37 +857,30 @@ function spawnClickParticles(x, y, count) {
 
 function loopClickFx() {
   clickFxCtx.clearRect(0, 0, clickFxCanvas.width, clickFxCanvas.height);
+  // textAlign/textBaseline no cambian entre partículas: se fijan una sola vez por frame
+  // en vez de dentro del loop (antes se reescribían en cada iteración).
+  clickFxCtx.textAlign = 'center';
+  clickFxCtx.textBaseline = 'middle';
+
   for (let i = clickParticles.length - 1; i >= 0; i--) {
     const p = clickParticles[i];
     p.x += p.vx; p.y += p.vy;
     p.vy += p.gravity;
     p.life -= p.decay;
-    p.rotation += p.rotSpeed;
 
-    if (p.life <= 0) { clickParticles.splice(i, 1); continue; }
+    if (p.life <= 0) { clickParticles.splice(i, 1); continue; } // limpieza inmediata, sin fugas
 
-    clickFxCtx.save();
+    // Sin shadowBlur, sin save/restore, sin rotate: solo texto plano con opacidad.
+    // Esto era el costo principal por partícula (shadowBlur fuerza un blur por fillText).
     clickFxCtx.globalAlpha = Math.max(0, p.life);
-    clickFxCtx.translate(p.x, p.y);
-    clickFxCtx.rotate(p.rotation * Math.PI/180);
-    if (p.isEmoji) {
-      clickFxCtx.font = `${p.size}px sans-serif`;
-      clickFxCtx.textAlign = 'center';
-      clickFxCtx.textBaseline = 'middle';
-      clickFxCtx.shadowColor = p.color;
-      clickFxCtx.shadowBlur = 10;
-      clickFxCtx.fillText(p.text, 0, 0);
-    } else {
-      clickFxCtx.font = `600 ${p.size}px 'Dancing Script', cursive`;
-      clickFxCtx.textAlign = 'center';
-      clickFxCtx.textBaseline = 'middle';
-      clickFxCtx.fillStyle = p.color;
-      clickFxCtx.shadowColor = p.color;
-      clickFxCtx.shadowBlur = 8;
-      clickFxCtx.fillText(p.text, 0, 0);
-    }
-    clickFxCtx.restore();
+    clickFxCtx.font = p.isEmoji
+      ? `${p.size}px sans-serif`
+      : `600 ${p.size}px 'Dancing Script', cursive`;
+    clickFxCtx.fillStyle = p.color;
+    clickFxCtx.fillText(p.text, p.x, p.y);
   }
+  clickFxCtx.globalAlpha = 1;
+
   if (clickParticles.length > 0) {
     requestAnimationFrame(loopClickFx);
   } else {
