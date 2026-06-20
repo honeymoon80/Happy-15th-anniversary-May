@@ -28,8 +28,21 @@
 <div id="openScreen" class="open-screen">
   <div class="open-bg-deco" id="openBgDeco"></div>
   <div class="open-content">
-    <div class="open-title" id="openTitle">Para May, con todo mi amor</div>
-    <div class="open-subtitle">Un regalo hecho con cada latido de mi corazón 💗</div>
+
+    <!-- Bloque de aniversario (se muestra/oculta dinámicamente vía JS según CONFIG.aniversario.activo) -->
+    <div id="anniversaryBlock" class="anniversary-block hidden">
+      <div class="anniversary-frame">
+        <img id="anniversaryImg" class="anniversary-img" src="" alt="Aniversario">
+      </div>
+      <div class="anniversary-text" id="anniversaryText"></div>
+    </div>
+
+    <!-- Título normal (se oculta si el aniversario está activo) -->
+    <div id="normalTitleBlock">
+      <div class="open-title" id="openTitle">Para May, con todo mi amor</div>
+      <div class="open-subtitle">Un regalo hecho con cada latido de mi corazón 💗</div>
+    </div>
+
     <button id="openBtn" class="open-heart-btn">
       <span class="open-heart-icon">💗</span>
       <span class="open-heart-label">Abrir regalo</span>
@@ -113,6 +126,9 @@
   <div class="phrase-card" id="phraseCard">
     <button class="phrase-close" id="phraseClose">✕</button>
     <div class="phrase-deco-top">✨ 💗 ✨</div>
+    <div class="phrase-polaroid hidden" id="phrasePolaroidWrap">
+      <img class="phrase-polaroid-img" id="phrasePolaroidImg" src="" alt="">
+    </div>
     <div class="phrase-title" id="phraseTitle"></div>
     <div class="phrase-text" id="phraseText"></div>
   </div>
@@ -127,6 +143,24 @@
     <button class="phrase-close" id="endPlaylistClose">✕</button>
     <div class="phrase-deco-top">🎶 💕 🎶</div>
     <div class="phrase-text" id="endPlaylistText"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     MODAL FINAL ESPECTACULAR (al completar 8 frases)
+════════════════════════════════════════════ -->
+<div id="finalModal" class="final-modal hidden">
+  <canvas id="finalModalFx" class="final-modal-fx"></canvas>
+  <div class="final-backdrop" id="finalBackdrop"></div>
+  <div class="final-card" id="finalCard">
+    <button class="phrase-close final-close" id="finalClose">✕</button>
+    <div class="final-deco-top">✨ 💖 🌸 💖 ✨</div>
+    <div class="final-title" id="finalTitle"></div>
+    <div class="final-msg-wrap">
+      <div class="final-msg" id="finalMsg"></div>
+      <div class="final-gallery" id="finalGallery"></div>
+    </div>
+    <div class="final-deco-bottom">— Con todo mi amor —</div>
   </div>
 </div>
 
