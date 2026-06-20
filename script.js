@@ -767,9 +767,21 @@ function updateOrbitOverlayPositions() {
 
   orbitElements.forEach(o => {
     o.angle += o.speed * 0.01;
-    const x = Math.cos(o.angle) * o.radius;
-    const zFactor = Math.sin(o.angle); // -1..1 simula profundidad
-    const y = Math.sin(o.angle * 0.7 + t*0.3) * o.vertAmp * 0.4 + Math.sin(o.angle) * (o.vertAmp*0.3);
+
+    let x, y, zFactor;
+
+    if (o.type === 'image') {
+      // Órbita VERTICAL: las imágenes giran en el plano Y-Z (suben y bajan),
+      // en vez del plano X-Z horizontal de frases/palabras clave.
+      zFactor = Math.cos(o.angle); // -1..1 simula profundidad (acercarse/alejarse)
+      x = Math.sin(o.angle) * o.radius * 0.35; // leve desplazamiento horizontal para dar volumen al aro
+      y = Math.sin(o.angle) * o.radius; // recorrido vertical principal (arriba <-> abajo)
+    } else {
+      // Frases y palabras clave: se mantiene la órbita horizontal original
+      x = Math.cos(o.angle) * o.radius;
+      zFactor = Math.sin(o.angle); // -1..1 simula profundidad
+      y = Math.sin(o.angle * 0.7 + t*0.3) * o.vertAmp * 0.4 + Math.sin(o.angle) * (o.vertAmp*0.3);
+    }
 
     const depthScale = 0.65 + (zFactor*0.5+0.5) * o.depthAmp + 0.5;
     const screenX = cx + x;
@@ -779,7 +791,12 @@ function updateOrbitOverlayPositions() {
     o.el.style.top  = screenY + 'px';
     o.el.style.transform = `translate(-50%,-50%) scale(${depthScale.toFixed(3)})`;
     o.el.style.zIndex = Math.round((zFactor+1) * 50) + 5;
-    o.el.style.opacity = (0.55 + (zFactor*0.5+0.5)*0.45).toFixed(2);
+
+    // Las imágenes mantienen su opacidad translúcida fija (definida en CSS, 0.7);
+    // solo frases y palabras clave usan opacidad dinámica según profundidad.
+    if (o.type !== 'image') {
+      o.el.style.opacity = (0.55 + (zFactor*0.5+0.5)*0.45).toFixed(2);
+    }
   });
 }
 
