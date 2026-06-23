@@ -73,12 +73,12 @@ const CONFIG = {
   // ── Modal final espectacular (al completar las 8 frases) ──
   modalFinal: {
     titulo: "INFINITASH QUICEAÑERAS de nuestro FULGOROSO y ETERNO AMOL",
-    mensaje "Pares de primaverash silban melódicas y risueñitash, congenian entusiastas tus majestuosos ojitos de algodón; vidita eterna y universo inmenso colisionan juntos en la gloriosha infinidad de tu bellishima ternurita de mujel; preciosho kuerpo y almita entera son las que, dichoshas y afortunadas, te komponen y te akompañan póstumas a tu veldadera y celestial paradisiaka de tus infinitash deidades y maravillas mueñeñe😸💗💐✨️ Llego el día, 15 fantasiosos e idílikos meseshitos en los que, a punta de cerezitas delicioshas y picaronshitos de colibri. punzaste tan feroz y apasionada mi vidita entera y total entregada a TI, que con tan solo tus noltálgicas melancolías, me enternizas noble dominancia absoluta a tu bíblica añorancia y a tu sensual majestuosidad de dedikalte pol siempre y kon máxima extaltación, mi almita kompleta en adoralte y cortejarte tan bellíshima damita siempre PERFECTA y tan maravillosho PARAISO eterno k siempre woa AMAL y FANTASEAL pol toditita mi almita entera FOREVER HEJE<3💗🌸🌟",
+    mensaje: "Pares de primaverash silban melódicas y risueñitash, congenian entusiastas tus majestuosos ojitos de algodón; vidita eterna y universo inmenso colisionan juntos en la gloriosha infinidad de tu bellishima ternurita de mujel; preciosho kuerpo y almita entera son las que, dichoshas y afortunadas, te komponen y te akompañan póstumas a tu veldadera y celestial paradisiaka de tus infinitash deidades y maravillas mueñeñe😸💗💐✨️ Llego el día, 15 fantasiosos e idílikos meseshitos en los que, a punta de cerezitas delicioshas y picaronshitos de colibri. punzaste tan feroz y apasionada mi vidita entera y total entregada a TI, que con tan solo tus noltálgicas melancolías, me enternizas noble dominancia absoluta a tu bíblica añorancia y a tu sensual majestuosidad de dedikalte pol siempre y kon máxima extaltación, mi almita kompleta en adoralte y cortejarte tan bellíshima damita siempre PERFECTA y tan maravillosho PARAISO eterno k siempre woa AMAL y FANTASEAL pol toditita mi almita entera FOREVER HEJE<3💗🌸🌟",
     imagenes: ["final_foto1.webp", "final_foto2.webp", "final_foto3.webp", "final_foto4.webp"],
   },
 
   // ── Colores pastel del corazón y partículas ────────
-  colores: ["", "", "", "", ""],
+  colores: ["#FFB6C1", "#FF6B81", "#FFD1DC", "#FFDAB9", "#FF85A2"],
 
   // ── Canciones (solo nombres de archivo, carpeta assets/music/) ──
   canciones: [
