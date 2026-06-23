@@ -19,73 +19,73 @@ const CONFIG = {
   aniversario: {
     activo: true,
     imagen: "aniversario15.webp",
-    texto: "15 años a tu lado 💗",
+    texto: "💗15 meses a tu lado mi niñita bem helmoshita de mi korashon<3💗",
   },
 
   // ── Frases cortas que orbitan la galaxia ───────────
   // Al hacer clic se abre la carta polaroid con el mensaje largo (mensajesLargos)
   // y la foto correspondiente (fotosFrases). Deben tener la MISMA cantidad y orden.
   frases: [
-    "Eres mi universo, May",
-    "Cada latido es por ti",
-    "May, mi corazón baila contigo",
-    "Eres la luz de mi galaxia",
-    "Contigo, eternidad",
-    "Eres mi sueño hecho realidad",
-    "Tu sonrisa ilumina mi mundo",
-    "Eres mi razón de ser",
+    "🌌💗eres todito mi UNIVERSO eterno May:3💗🌌",
+    "toditosh mi LATIDITOSH son siempre para ti<3💗🫀",
+    "eresh mi bellíshima y eterna MELODÍA de verano🥹💗🌅",
+    "🍯💗eres mi dulshe y deliciosha terronshita de karamelito y miel(≧▽≦)💗🍯",
+    "☀️💗siempre estaré a tu ladito infinitash eternidades forever my love baby;)💗☀️",
+    "eresh mi preciosha angelita y eterna dueñita de toditosh mi sueñitos de miel(^ω^)💗💤✨️",
+    "🌟💗tu bellíshima SONRISHITA siempre va embelleshel mi vidita entera🥹💗🌟",
+   "siempre seras mi ETERNA e INFINITA razon de sel HEHE:3💗❤️‍🔥",
   ],
 
   // ── Mensajes largos (clave = frase corta exacta) ───
   mensajesLargos: {
-    "Eres mi universo, May": "May, desde que llegaste a mi vida, mi mundo entero cambió de color. Eres el centro de todo lo que gira a mi alrededor, mi estrella más brillante, mi universo entero.",
-    "Cada latido es por ti": "Cada vez que mi corazón late, lo hace pensando en ti. No hay un solo segundo del día en que no estés en mis pensamientos, May. Tú eres el ritmo de mi vida.",
-    "May, mi corazón baila contigo": "Cuando estoy contigo siento que mi corazón baila al compás de una canción que solo nosotros conocemos. Cada momento juntos es una melodía inolvidable.",
-    "Eres la luz de mi galaxia": "En medio de toda la oscuridad, tú siempre eres la luz que ilumina mi camino. Eres la estrella más brillante en mi pequeño universo, May.",
-    "Contigo, eternidad": "No me imagino el tiempo sin ti. Contigo, cada segundo se siente como una eternidad hermosa que quiero vivir una y otra vez, para siempre.",
-    "Eres mi sueño hecho realidad": "Hay sueños que nunca pensé que se cumplirían, y tú eres el más hermoso de todos. Cada día a tu lado confirmo que la realidad puede ser mejor que cualquier sueño.",
-    "Tu sonrisa ilumina mi mundo": "Tu sonrisa tiene el poder de cambiar mi día entero. No importa qué tan difícil sea el momento, verte sonreír me recuerda por qué vale la pena todo.",
-    "Eres mi razón de ser": "Antes de ti, mi vida tenía un rumbo. Contigo, encontré un propósito. Eres mi razón de ser, mi motivación de cada mañana y mi paz de cada noche.",
+    "🌌💗eres todito mi UNIVERSO eterno May:3💗🌌": "desde akella primera vesh k te konoci, pude vel entre tanta BELLESHA y TERNURITA natural tan TUYA, mi másh grande SUEÑITO a obra y gracia de tu maravillosha DEIDAD iluminando y embelleciendo mi vidita entera, desde aquel día... siempre ADORARÉ y rendiré CULTO y vasallaje a mi eterna y majestuosha precioshidad, a mi universo entero FOREVER HEHE;3💗🌌✨️",
+    "toditosh mi LATIDITOSH son siempre para ti<3💗🫀": "Golpe trash golpe, me exhausta la excitante prepotencia y ARDE a fuego FLAMANTE mis deseitosh de POSEERTE y hacerte MIA en mi eterna íntimidad y desnudez romantika, ante TI desprendo ferviente organo de mi VIDA y te la koncedo TUYA mi bella mujelshita y dueña de toditito mi korashon:)💗🫀✨️",
+    "eresh mi bellíshima y eterna MELODÍA de verano🥹💗🌅": "te koncedo nobles y apasionados pashitos de miel en cortecía y coqueteria de tu mayol y único ADORADOR, dichoso rey y principe eterno en máxima categoria de tus bendecidas y delicioshas fantasías de lujuria y café HEHE😸💗☕️",
+    "🍯💗eres mi dulshe y deliciosha terronshita de karamelito y miel(≧▽≦)💗🍯": "3 decenash de infantil infinidad fueron kontaditash tan minuciosas, tan detalladash, esculpidash en perfección para podel trael al mundito a tan BELLÍSHIMA y DIVINITA bebeshita ETERNA, de kn idolatro y sobrexalto maravillash y milagritosh k koncede tu celestial narutaleza maternal ñejeje😸💗🎀✨️",
+    "☀️💗siempre estaré a tu ladito infinitash eternidades forever my love baby;)💗☀️": "Riko bizkochito de madrugada, tus dulshe beshosh han de alimental mis hambrientos arrebatos de KOMERTE todita y servirte diaria y eterna en mis bokaditos de lujurias, en los k siempre vash a sel mi deliciosha komidita de a bokados y beshotesh te koncedo ñejeje🥺💗🎂",
+    "eresh mi preciosha angelita y eterna dueñita de toditosh mi sueñitos de miel(^ω^)💗💤✨️": "promeshita de meñike he eternizado a titulo emblemátiko e intimo de mi inmortalidad, te recito en mi sensualidad lírica y consentida infinitosh "siempré te AMARÉ...." y te GLORIFICO komo eminencia misma de pura ADORACION hacía TI HEHE(≧▽≦)💗🌸🌟",
+    "🌟💗tu bellíshima SONRISHITA siempre va embelleshel mi vidita entera🥹💗🌟": "Premicias kada idealizada mañanita kon tan dulshes rebotesh y meneos de tus pomposos glúteos, akomodandose en silueta PERFECTA, maravillante y decorosa de tal deliciosha FINURA de mujel, te completas DIVINIDAD absoluta y delikada kon tu eterna sonrishita al borde de precioshidad tan vuestra😸💗☀️✨️",
+    "siempre seras mi ETERNA e INFINITA razon de sel HEHE:3💗❤️‍🔥": "romántikas dedikatorias te enaltecen a tan íntima plenitud y exaltacion de lo divino y lo eterno, te adornan puras vitalidades k konceden vida eterna a todito lo k te rodea, pues es natural en ti, es tan pura y sincera tu peshoshísima PERFECCIÓN femenina de mujel!! tan cristalina y cautivante tu sensual finura de sel pol siempre y para siempre mi ARDIENTE y DIVINA razón de sel HEHE🥺💗🌸✨️",
   },
 
-  // ── Foto polaroid asociada a cada frase corta (mismo orden que `frases`) ──
+  // ── Foto polaroid asociada a cada frase corta (mismo orden que frases) ──
   // Carpeta: assets/img/
   fotosFrases: {
-    "Eres mi universo, May":         "msg_foto1.webp",
-    "Cada latido es por ti":         "msg_foto2.webp",
-    "May, mi corazón baila contigo": "msg_foto3.webp",
-    "Eres la luz de mi galaxia":     "msg_foto4.webp",
-    "Contigo, eternidad":            "msg_foto5.webp",
-    "Eres mi sueño hecho realidad":  "msg_foto6.webp",
-    "Tu sonrisa ilumina mi mundo":   "msg_foto7.webp",
-    "Eres mi razón de ser":          "msg_foto8.webp",
+    "🌌💗eres todito mi UNIVERSO eterno May:3💗🌌":         "msg_foto1.webp",
+    "toditosh mi LATIDITOSH son siempre para ti<3💗🫀":         "msg_foto2.webp",
+    "eresh mi bellíshima y eterna MELODÍA de verano🥹💗🌅": "msg_foto3.webp",
+    "🍯💗eres mi dulshe y deliciosha terronshita de karamelito y miel(≧▽≦)💗🍯":     "msg_foto4.webp",
+    "☀️💗siempre estaré a tu ladito infinitash eternidades forever my love baby;)💗☀️":            "msg_foto5.webp",
+    "eresh mi preciosha angelita y eterna dueñita de toditosh mi sueñitos de miel(^ω^)💗💤✨️":  "msg_foto6.webp",
+    "🌟💗tu bellíshima SONRISHITA siempre va embelleshel mi vidita entera🥹💗🌟":   "msg_foto7.webp",
+    "siempre seras mi ETERNA e INFINITA razon de sel HEHE:3💗❤️‍🔥":          "msg_foto8.webp",
   },
 
   // ── Palabras clave interactivas (con su propio estilo) ──
   palabrasClave: {
-    "Recuerdos":  "Nuestro primer viaje juntos, tus risas que no se callan nunca, tus abrazos que me hacen sentir en casa... cada recuerdo contigo es un tesoro que guardo en mi corazón.",
-    "Promesas":   "Te prometo amarte siempre, en los días fáciles y en los difíciles. Te prometo ser tu compañero, tu refugio y tu mayor admirador por toda la vida.",
-    "Futuro":     "Sueño con un futuro lleno de aventuras a tu lado, de risas compartidas, de metas alcanzadas juntos. Quiero construir contigo cada capítulo que viene.",
-    "Eternidad":  "Si la eternidad existe, quiero pasarla completa a tu lado. Ningún tiempo es suficiente para amarte como mereces, así que elijo amarte para siempre.",
-    "Aventura":   "Contigo cada día es una aventura nueva. Ya sea explorando lugares nuevos o simplemente quedándonos en casa, todo se vuelve especial cuando estás tú.",
+    "Recuerdos":  "Nuestros infinitosh viajes bem juntitosh forever, tus dulshes rishitas que siempre rebolotean en mi kabeshita, tus grandesh abashitos que me hacen sentil en mi dulshe hogal... kada bellíshimo rekuerdo kontigo siempre será mi mash grande tesoro que gualdaré en lo mash profundo de mi korashon HEHE;3💗🫀💫",
+    "Promesas":   "Te prometo amalte siempre, en las buenash y en las malas. Te prometo sel tu noble caballero, tu eterna zonita segura y tu mayol admiradol pol todita mi vidita entera mi my good baby May🥺💗🌸✨️",
+    "Futuro":     "Toditash las noshes sueño con nuestro infinito y maravillosho futuro lleno de aventuras y deliciash a tu ladito pol siempre, de nuestrash rishas korrespondidas, de nuestras íntimash fantasíash k lograremosh bem juntitos. Kello forjal nuestra apasionada y eterna vidita bem abashaditosh y disfrutandl de nuestro kariñosho kalorshito😸💗🔥",
+    "Eternidad":  "Hasta el fin del universo mismo, he ahii donde el juicio final se presencia kon benevolencia y misericordia ante infimidad de deseitos y ruegosh, y aún ashi, vos siempre seguirás siendo ETERNA y PERFECTA en todita tu deliciosha plenitud, siendo la veldadera SALVADORA de mi vidita entera grashash a tu delikadita sutileza de Dioshita bem magistral de todito mi korashon<3💗🌟",
+    "Aventura":   "Noble navegadol de tus fertiles praderash, fiel adoradol de tus sensuales kaskadas, kariñosho protectol de tu mash intima y sabrosha PERFECCIÓN femenina de miel!! tan deliciosha y fulgurosa... siempre vamosh a paseal pol los largosh e infinitosh kaminitosh de nuestro atemporal y sintomátiko amol, siempre me ENKANTARÁ aprendel toditito de ti HEHE🥹💗💕✨️",
   },
 
   // ── Modal final espectacular (al completar las 8 frases) ──
   modalFinal: {
-    titulo: "Cada palabra fue un latido, cada latido fue por ti",
-    mensaje: "May, desde que llegaste a mi vida, cada palabra que te escribo se queda corta para describir lo que siento. Has leído cada una de mis frases, cada latido convertido en palabras, y eso para mí significa todo. Quiero que sepas que cada día a tu lado es un regalo, que tu amor es el motor de mi vida entera, y que no existe distancia, tiempo ni circunstancia que pueda apagar lo que siento por ti. Gracias por ser mi compañera, mi mejor amiga y el amor de mi vida. Esto apenas es el comienzo de todo lo que quiero vivir contigo, May. Te amo con todo lo que soy, hoy, mañana y siempre.",
+    titulo: "INFINITASH QUICEAÑERAS de nuestro FULGOROSO y ETERNO AMOL",
+    mensaje "Pares de primaverash silban melódicas y risueñitash, congenian entusiastas tus majestuosos ojitos de algodón; vidita eterna y universo inmenso colisionan juntos en la gloriosha infinidad de tu bellishima ternurita de mujel; preciosho kuerpo y almita entera son las que, dichoshas y afortunadas, te komponen y te akompañan póstumas a tu veldadera y celestial paradisiaka de tus infinitash deidades y maravillas mueñeñe😸💗💐✨️ Llego el día, 15 fantasiosos e idílikos meseshitos en los que, a punta de cerezitas delicioshas y picaronshitos de colibri. punzaste tan feroz y apasionada mi vidita entera y total entregada a TI, que con tan solo tus noltálgicas melancolías, me enternizas noble dominancia absoluta a tu bíblica añorancia y a tu sensual majestuosidad de dedikalte pol siempre y kon máxima extaltación, mi almita kompleta en adoralte y cortejarte tan bellíshima damita siempre PERFECTA y tan maravillosho PARAISO eterno k siempre woa AMAL y FANTASEAL pol toditita mi almita entera FOREVER HEJE<3💗🌸🌟",
     imagenes: ["final_foto1.webp", "final_foto2.webp", "final_foto3.webp", "final_foto4.webp"],
   },
 
   // ── Colores pastel del corazón y partículas ────────
-  colores: ["#FFB6C1", "#FF6B81", "#FFD1DC", "#FFDAB9", "#FF85A2"],
+  colores: ["", "", "", "", ""],
 
   // ── Canciones (solo nombres de archivo, carpeta assets/music/) ──
   canciones: [
-    { nombre: "Nuestra Canción",   archivo: "cancion1.mp3" },
-    { nombre: "Eres Tú",           archivo: "cancion2.mp3" },
-    { nombre: "Amor Eterno",       archivo: "cancion3.mp3" },
-    { nombre: "Para Siempre",      archivo: "cancion4.mp3" },
+    { nombre: "Harvey hers for you<3💗🎵",   archivo: "cancion1.mp3" },
+    { nombre: "Lovers rock forever🥺🎵🎶",           archivo: "cancion2.mp3" },
+    { nombre: "Sweet dream with you😸💤🎶",       archivo: "cancion3.mp3" },
+    { nombre: "Sweet Sweet marry me:)❤️‍🔥🎵",      archivo: "cancion4.mp3" },
   ],
 
   // ── Imágenes orbitando (carpeta assets/img/) ───────
@@ -107,10 +107,10 @@ const CONFIG = {
   ],
 
   // ── Emojis para partículas de clic ─────────────────
-  emojisClick: ["💖","✨","🌸","🌹","💫","🌺","❤️‍🔥","💕"],
+  emojisClick: ["💗","✨","🌸","🌷","💫","💐","❤️‍🔥","💞"],
 
   // ── Mensaje al terminar la playlist completa ───────
-  mensajeFinPlaylist: "May, esta canción termina, pero nuestro amor no 💗",
+  mensajeFinPlaylist: "SIEMPRE te dedikaré todititash nuestrash kancionesh de amol mi niñita peshoshita de mi korashon<3",
 
   // ── Parámetros de física / animación ───────────────
   velocidadOrbita: 0.0025,       // velocidad de rotación de la galaxia
