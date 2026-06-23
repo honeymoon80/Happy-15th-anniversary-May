@@ -678,7 +678,7 @@ function buildOrbitElements() {
   CONFIG.frases.forEach((frase, i) => {
     const el = document.createElement('div');
     el.className = 'orbit-phrase';
-    el.textContent = frase;
+    el.innerHTML = frase;  // ✅ CORREGIDO: innerHTML en vez de textContent
     el.addEventListener('click', () => {
       const fotoArchivo = CONFIG.fotosFrases ? CONFIG.fotosFrases[frase] : null;
       openPhraseModal(frase, CONFIG.mensajesLargos[frase] || frase, true, fotoArchivo);
@@ -1153,4 +1153,4 @@ function showNotif(msg) {
   globalNotif.classList.add('show');
   clearTimeout(notifTimer);
   notifTimer = setTimeout(() => globalNotif.classList.remove('show'), 3500);
-}
+       }
